@@ -7,8 +7,9 @@ library(RCurl)
 library(ggthemes)
 
 # first is the 2011 Corruption Data index
-setwd("/Users/paulbrennan/Dropbox/R for Biochemists/Namabia Stuff_Mar_2017/learnR_resources/Corruption & Human Development Index resources/CPI2011_DataPackage")
-corInd <- read_excel("CPI2011_Results.xls")
+link <- "https://raw.githubusercontent.com/brennanpincardiff/LearnR/master/data/CPI2011_Results.xls"
+download.file(url=link, destfile="file.xls", mode="wb")
+corInd <- read_excel("file.xls")
 
 # Bhutan is in the Excel File
 countries <- corInd$country
@@ -24,12 +25,15 @@ str(corInd)
 corInd <- corInd[,1:2]
 
 # second bit of data is 
-setwd("/Users/paulbrennan/Dropbox/R for Biochemists/Namabia Stuff_Mar_2017/learnR_resources/Corruption & Human Development Index resources")
-hdi <- read_excel("2015_Statistical_Annex_Table_2Trends in the Human Development Index.xls")
+link <- "https://raw.githubusercontent.com/brennanpincardiff/LearnR/master/data/2015_Statistical_Annex_Table_2Trends in the Human Development Index.xls"
+download.file(url=link, destfile="file.xls", mode="wb")
+hdi <- read_excel("file.xls")
+
 # look at the data
 # need to skip the first 6 rows
-hdi <- read_excel("2015_Statistical_Annex_Table_2Trends in the Human Development Index.xls",
+hdi <- read_excel("file.xls",
                   skip = 6)
+
 # check structure of the dataframe
 str(hdi)
 # second column has the country
@@ -37,7 +41,7 @@ str(hdi)
 # check column six:
 hdi[,6]
 # looks OK except 2011 is not in the column name so need to make that happen
-hdi <- read_excel("2015_Statistical_Annex_Table_2Trends in the Human Development Index.xls",
+hdi <- read_excel("file.xls",
                   skip = 6, col_names = TRUE)
 
 str(hdi)
@@ -50,9 +54,6 @@ colnames(hdi) <- c("country", "hdi2011")
 
 countries <- hdi$country
 c("Bhutan") %in% countries
-
-
-
 
 # now merge the two dataframes to create a new dataframe
 # by country name
@@ -119,11 +120,9 @@ p
 
 
 # import a different set of regions:
-setwd("/Users/paulbrennan/Dropbox/R for Biochemists/Namabia Stuff_Mar_2017/learnR_resources/Corruption & Human Development Index resources")
-
-# in Excel, I cut and pasted into long form...
-regions <- read_excel("worldBankRegions_rmduplic_long_20170317.xlsx", 
-                      col_names = FALSE)
+link <- "https://raw.githubusercontent.com/brennanpincardiff/LearnR/master/data/worldBankRegions_rmduplic_long_20170317.xlsx"
+download.file(url=link, destfile="file.xlsx", mode="wb")
+regions <- read_excel("file.xlsx")
 
 regions <- cbind(regions[,4], regions[,2])  
 regions <- regions[1:210,]
