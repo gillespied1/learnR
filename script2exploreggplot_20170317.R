@@ -25,7 +25,7 @@ str(corInd)
 corInd <- corInd[,1:2]
 
 # second bit of data is 
-link <- "https://raw.githubusercontent.com/brennanpincardiff/LearnR/master/data/2015_Statistical_Annex_Table_2Trends in the Human Development Index.xls"
+link <- "https://raw.githubusercontent.com/brennanpincardiff/LearnR/master/data/2015_Statistical_Annex_Table_2TrendsHumanDevIndex.xls"
 download.file(url=link, destfile="file.xls", mode="wb")
 hdi <- read_excel("file.xls")
 

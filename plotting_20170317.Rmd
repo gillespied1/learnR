@@ -1,0 +1,148 @@
+---
+title: "Plotting your data"
+author: "Paul Brennan"
+date: "17 March 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+library(ggplot2)
+library(RCurl)
+library(ggthemes)
+```
+
+## Plotting your data 
+Plotting is a key aspect of data analysis. It is valuable during two distinct phases: data exploration (at the beginning of the analysis cycle); and data presentation (often at the endo fthe analysis cycle). 
+
+Base R will generate some interesting plots and it's always worth trying the plot() function to see what happens. Another useful function for multidimensional data is pairs() which allows multiple comparisons. 
+
+The majority of this section will focus on using the ggplot2 library authors by Hadley Wickham. There is very good online documentation available <http://docs.ggplot2.org/current/> and a book available on github <https://github.com/hadley/ggplot2-book>
+
+## Our inspiration
+Our inspiration for this session is this graph published by the Economist a few years ago. 
+
+![](https://raw.githubusercontent.com/MarkKelson/learnR/master/Economist1.png)
+http://www.economist.com/blogs/dailychart/2011/12/corruption-and-development
+
+## Get the data
+The data needs to be downloaded first. It has already been placed on github
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# first the 2011 Corruption Data index
+link <- "https://raw.githubusercontent.com/brennanpincardiff/LearnR/master/data/CPI2011_Results.xls"
+download.file(url=link, destfile="file.xls", mode="wb")
+corInd <- read_excel("file.xls")
+
+# extract two columns we want
+corInd <- corInd[,1:2]
+
+# second bit of data is 
+link <- "https://raw.githubusercontent.com/brennanpincardiff/LearnR/master/data/2015_Statistical_Annex_Table_2TrendsHumanDevIndex.xls"
+download.file(url=link, destfile="file.xls", mode="wb")
+hdi <- read_excel("file.xls",
+                  skip = 6, col_names = TRUE)
+
+# column 2 with country names
+# column 6 with 2011 data
+# extract just these columns
+hdi <- cbind(hdi[,2], hdi[,6])
+# improve column names for merge
+colnames(hdi) <- c("country", "hdi2011")
+
+# now merge the two dataframes to create a new dataframe
+# by country name
+data <- merge(corInd[,1:2], hdi, by="country")
+# interestingly just 161 observations. 
+# still it's a good start. 
+```
+
+## Our first graph
+Our data is in a data.frame. 
+We can plot this data with the plot function
+```{r, echo=TRUE}
+plot(data$cpi11, data$hdi2011)
+
+```
+
+There are many ways to customise the plot but I'm not going to describe them. I'm going to go straight to using ggplot2. 
+The key to understanding ggplot is that you assemble the data in stages. 
+The first stage is attaching the data and then adding aesthetics (aes).
+The tells ggplot what data to use and what parts of the data are to be used in the x dimension and the y dimesions. 
+
+```{r, echo=TRUE}
+ggplot(data, 
+       aes(x = cpi11,
+           y = hdi2011))
+  
+```  
+
+The key thing to note is that we have a graph but no points. ggplot has set the axis and added titles based on the titles of the columns from which the data is taken. 
+This is because we haven't told ggplot what kind of graph to prepare. There are many options, of course.
+
+The options are often described as a geometry (geom) and a good example is geom_point
+
+```{r, echo=TRUE}
+ggplot(data, 
+       aes(x = cpi11,
+           y = hdi2011)) +
+  geom_point()
+  
+```  
+
+The geom_point now adds the points with the default settings. 
+
+Note the is one warning - one row has been ignored. If we look at the data we see that this row is lacking a piece of data.
+
+The documentation <http://docs.ggplot2.org/current/geom_point.html> contains lots information about how geom_point() can be used. 
+
+Here are some examples:
+Colouring the points:
+```{r, echo=TRUE}
+ggplot(data, 
+       aes(x = cpi11,
+           y = hdi2011)) +
+  geom_point(colour = "red")
+  
+```  
+
+Size and fill points:
+```{r, echo=TRUE}
+ggplot(data, 
+       aes(x = cpi11,
+           y = hdi2011)) +
+  geom_point(shape = 21, colour = "blue", fill = "white", size = 3, stroke = 1.25)
+  
+```  
+
+Usually we create a plot object and then add details to the plot object. 
+
+```{r, echo=TRUE}
+p <- ggplot(data, 
+       aes(x = cpi11,
+           y = hdi2011)) +
+     geom_point(shape = 21, colour = "blue", fill = "white", size = 3, stroke = 1.25)
+  
+```  
+This doesn't plot anything but creates a list object. 
+This can be seen by looking at the environment window in RStudio which should look a bit like this picture:
+
+To see the plot, type the name of the object
+```{r, echo=TRUE}
+p 
+  
+```  
+
+
+We can display the object and add some extra details. 
+These are just produced in the display. 
+In this example we have added a title and we have labelled the x and y axis. 
+```{r, echo=TRUE, warning = FALSE}
+p + ylab("Human Development Index, 2011 (1=best)") +
+    xlab("Corruption Perceptions Index, 2011 (10=least corrupt)") +
+    ggtitle(paste("Corruption & human development"))
+  
+``` 
+
+
+To be continued.....
