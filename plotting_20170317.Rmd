@@ -154,7 +154,16 @@ p + ylab("Human Development Index, 2011 (1=best)") +
   
 ``` 
 
+The x and y axis titles look a little large, I think.
+By using the theme() function with the argument axis.title, we can customise the text to look the way we want to...
+```{r, echo=TRUE, warning = FALSE}
+p + ylab("Human Development Index, 2011 (1=best)") +
+  xlab("Corruption Perceptions Index, 2011 (10=least corrupt)") +
+  ggtitle(paste("Corruption & human development")) +
+  theme(axis.title.y = element_text(size = 8, face = "italic")) +
+  theme(axis.title.x = element_text(size = 8, face = "italic"))
 
+``` 
 
 ## Making a more interesting plot
 We can make more complex graphs by adding more data, for example the continent or the economic region. 
@@ -302,7 +311,9 @@ p <- ggplot(data,
                 fill = "white", size = 2, stroke = 1.25) +
      ylab("Human Development Index, 2011 (1=best)") +
      xlab("Corruption Perceptions Index, 2011 (10=least corrupt)") +
-     ggtitle(paste("Corruption & human development"))
+     ggtitle(paste("Corruption & human development")) +
+     theme(axis.title.y = element_text(size = 8, face = "italic")) +
+     theme(axis.title.x = element_text(size = 8, face = "italic"))
   
 p  # show the graph  
 ```
@@ -323,11 +334,9 @@ The scale_x_continuous() and scale_y_continuous() gives more options.
 
 ```{r, echo=TRUE, warning= FALSE}
 # modify the object with scale_x_continuous() and xlim() functions
-p <- p + scale_x_continuous(name = "Corruption Perceptions Index, 2011 (10=least corrupt)",
-                     limits = c(1,10),   # start and end
+p <- p + scale_x_continuous(limits = c(1,10),   # start and end
                      breaks = c(1,2,3,4,5,6,7,8,9,10)) +   # names
-  scale_y_continuous(name = "Human Development Index, 2011 (1=best)",
-                     limits = c(0.2, 1.0),
+         scale_y_continuous(limits = c(0.2, 1.0),
                      breaks = c(0.2, 0.3, 0.4, 0.5,
                                 0.6, 0.7, 0.8, 0.9, 1))
 
@@ -348,7 +357,8 @@ p + theme_bw()   # I like the black and white theme
 
 
 ```{r, echo=TRUE, warning= FALSE}
-# exploring themes
+# exploring themes 
+# Stephen Few theme
 p + theme_few()   
 ```
 
@@ -356,6 +366,7 @@ p + theme_few()
 
 ```{r, echo=TRUE, warning= FALSE}
 # exploring themes
+# Edward Tufte theme
 p +  theme_tufte()   
 ```
 
@@ -363,7 +374,14 @@ p +  theme_tufte()
 
 ```{r, echo=TRUE, warning= FALSE}
 # exploring themes
+# economist themes
 p + theme_economist()   
 ```
 
+```{r, echo=TRUE, warning= FALSE}
+# exploring themes
+# economist themes
+p + theme_economist_white(gray_bg=FALSE)  
+```
 
+## Next step is adding some text...
