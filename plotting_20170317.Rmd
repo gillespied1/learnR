@@ -2,7 +2,9 @@
 title: "Plotting your data"
 author: "Paul Brennan"
 date: "17 March 2017"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -57,6 +59,14 @@ data <- merge(corInd[,1:2], hdi, by="country")
 # still it's a good start. 
 ```
 
+## Here is the data
+Using the head() function
+```{r, echo=TRUE}
+head(data)
+```
+
+
+
 ## Our first graph
 Our data is in a data.frame. 
 We can plot this data with the plot function
@@ -65,7 +75,7 @@ plot(data$cpi11, data$hdi2011)
 
 ```
 
-There are many ways to customise the plot but I'm not going to describe them. I'm going to go straight to using ggplot2. 
+There are many ways to customise the plot using the plot() function but I'm not going to describe them. I'm going to go straight to using ggplot2. 
 The key to understanding ggplot is that you assemble the data in stages. 
 The first stage is attaching the data and then adding aesthetics (aes).
 The tells ggplot what data to use and what parts of the data are to be used in the x dimension and the y dimesions. 
@@ -133,7 +143,7 @@ p
   
 ```  
 
-
+## Adding some titles
 We can display the object and add some extra details. 
 These are just produced in the display. 
 In this example we have added a title and we have labelled the x and y axis. 
@@ -144,5 +154,234 @@ p + ylab("Human Development Index, 2011 (1=best)") +
   
 ``` 
 
+The x and y axis titles look a little large, I think.
+By using the theme() function with the argument axis.title, we can customise the text to look the way we want to...
+```{r, echo=TRUE, warning = FALSE}
+p + ylab("Human Development Index, 2011 (1=best)") +
+  xlab("Corruption Perceptions Index, 2011 (10=least corrupt)") +
+  ggtitle(paste("Corruption & human development")) +
+  theme(axis.title.y = element_text(size = 8, face = "italic")) +
+  theme(axis.title.x = element_text(size = 8, face = "italic"))
 
-To be continued.....
+``` 
+
+## Making a more interesting plot
+We can make more complex graphs by adding more data, for example the continent or the economic region. 
+
+```{r, echo=TRUE}
+# add continents (not same as graphic but more understandable)
+# Colour by continent inspired by Gapminder
+# Data adapted from http://www.stat.ubc.ca/~jenny/notOcto/STAT545A/examples/gapminder/data/gapminderCountryColors.txt
+x <- getURL("https://raw.githubusercontent.com/brennanpincardiff/RforBiochemists/master/data/countryColors20151026")
+countryColors <- read.csv(text = x)
+data <- merge(data, countryColors, by="country")
+# lost a few more countries - just 133 now... needs a check at some point
+```
+
+A look at data suing the head() function the extra detail.
+```{r, echo=TRUE}
+head(data)
+```
+
+```{r, echo=TRUE, warning = FALSE}
+ggplot(data, 
+       aes(x = cpi11,
+           y = hdi2011, 
+           colour = continent)) +
+     geom_point()
+  
+```  
+
+
+## Introducting facet_wrap()
+The function facet_wrap() allows us to split the visualisation into different plots. It keeps the scales the same so it allows comparsions but is very useful if there are too many points on the first plot. 
+
+```{r, echo=TRUE, warning = FALSE}
+ggplot(data, 
+       aes(x = cpi11,
+           y = hdi2011, 
+           colour = continent)) +
+     geom_point() +
+     facet_wrap(~continent)
+``` 
+
+## Graph with a subset of data...
+So after using the facet_wrap(), we decide we want a graph of just the Africa data not all of it. So we can make a subset of the data on the fly. 
+
+```{r, echo=TRUE, warning = FALSE}
+ggplot(data[data$continent == "Africa",], # creates a subset of the data
+       aes(x = cpi11,
+           y = hdi2011, 
+           colour = continent)) +
+     geom_point()
+
+``` 
+
+
+
+## Using a different geometry (geom_line())
+
+So adding a different geometry gives us a different the graph. 
+For example the geom_line() 
+
+```{r, echo=TRUE, warning= FALSE}
+ggplot(data[data$continent == "Africa",], # creates a subset of the data
+       aes(x = cpi11,
+           y = hdi2011)) +
+     geom_line()
+  
+```  
+
+Not the most useful line. So instead we add a linear model using the stat_smooth(). 
+
+
+```{r, echo=TRUE, warning= FALSE}
+ggplot(data[data$continent == "Africa",], # creates a subset of the data
+       aes(x = cpi11,
+           y = hdi2011)) +
+     stat_smooth(method = "lm")
+```  
+
+This figures just shows the line. The dark grey describes the confidence interval of the line. 
+How about we add points to the graph and it will look better. 
+
+
+
+```{r, echo=TRUE, warning= FALSE}
+ggplot(data[data$continent == "Africa",], # creates a subset of the data
+       aes(x = cpi11,
+           y = hdi2011)) +
+     stat_smooth(method = "lm") +
+     geom_point(size = 2)
+```  
+
+## Fitting a curve
+A curve, rather than a line, better describes the original data. 
+
+To fit the line requires geom_smooth().
+
+```{r, echo=TRUE, warning= FALSE}
+
+ggplot(data, 
+       aes(x = cpi11,
+           y = hdi2011)) +
+     geom_point(shape = 21, colour = "blue", fill = "white", size = 3, stroke = 1.25) +
+  geom_smooth(method = "nls", 
+              method.args = list(formula = y ~ HDImax * x / (cpi50 + x), 
+                                 start = list(HDImax = 1, cpi50 = 0.5)),
+              se = F, size = 2, 
+              data = data)
+  
+```
+
+The order is important
+```{r, echo=TRUE, warning= FALSE}
+
+ggplot(data, 
+       aes(x = cpi11,
+           y = hdi2011)) +
+  geom_smooth(method = "nls", 
+              method.args = list(formula = y ~ HDImax * x / (cpi50 + x), 
+                                 start = list(HDImax = 1, cpi50 = 0.5)),
+              se = F, size = 2, 
+              data = data) +
+     geom_point(shape = 21, colour = "blue", fill = "white", size = 3, stroke = 1.25)
+  
+  
+```
+Points now on top of the line. 
+Because ggplot uses layers as a key element of the grammer of graphics, the order of the code is the order of the layers.
+
+## Controlling the axis. 
+We saw earlier how to add titles to their graphs. ggplot also contains various ways to control the axis of the graphs. 
+
+```{r, echo=TRUE, warning= FALSE}
+# create the object first
+p <- ggplot(data, 
+       aes(x = cpi11,
+           y = hdi2011,
+           colour = continent)) +
+     geom_smooth(method = "nls",  # with the curve
+              method.args = list(formula = y ~ HDImax * x / (cpi50 + x), 
+                                 start = list(HDImax = 1, cpi50 = 0.5)),
+              se = F, size = 1, 
+              data = data, 
+              colour = "red") +
+     geom_point(shape = 21, 
+                fill = "white", size = 2, stroke = 1.25) +
+     ylab("Human Development Index, 2011 (1=best)") +
+     xlab("Corruption Perceptions Index, 2011 (10=least corrupt)") +
+     ggtitle(paste("Corruption & human development")) +
+     theme(axis.title.y = element_text(size = 8, face = "italic")) +
+     theme(axis.title.x = element_text(size = 8, face = "italic"))
+  
+p  # show the graph  
+```
+
+So I would like to change the axis
+In the figure the y-axis goes from 0.2 to 1 and the x-axis goes from 1 to 10.
+We can use the ylim() and xlim() functions.
+
+```{r, echo=TRUE, warning= FALSE}
+# use ylim() and xlim() functions to modify the object
+p + ylim(0.2, 1) +
+    xlim(1,10)
+```
+
+This broadens the axis but doesn't give us quite what it shows in the original figure. 
+
+The scale_x_continuous() and scale_y_continuous() gives more options. 
+
+```{r, echo=TRUE, warning= FALSE}
+# modify the object with scale_x_continuous() and xlim() functions
+p <- p + scale_x_continuous(limits = c(1,10),   # start and end
+                     breaks = c(1,2,3,4,5,6,7,8,9,10)) +   # names
+         scale_y_continuous(limits = c(0.2, 1.0),
+                     breaks = c(0.2, 0.3, 0.4, 0.5,
+                                0.6, 0.7, 0.8, 0.9, 1))
+
+p # show the new object
+```
+
+This graph has all the necessary numbesr on the axis. 
+
+## Using a theme
+ggplot allows the addition of a theme - and there are many available. 
+You can also create custom themes. 
+There are more themes in the ggthemes package. 
+
+```{r, echo=TRUE, warning= FALSE}
+# exploring themes
+p + theme_bw()   # I like the black and white theme
+```
+
+
+```{r, echo=TRUE, warning= FALSE}
+# exploring themes 
+# Stephen Few theme
+p + theme_few()   
+```
+
+
+
+```{r, echo=TRUE, warning= FALSE}
+# exploring themes
+# Edward Tufte theme
+p +  theme_tufte()   
+```
+
+
+
+```{r, echo=TRUE, warning= FALSE}
+# exploring themes
+# economist themes
+p + theme_economist()   
+```
+
+```{r, echo=TRUE, warning= FALSE}
+# exploring themes
+# economist themes
+p + theme_economist_white(gray_bg=FALSE)  
+```
+
+## Next step is adding some text...
