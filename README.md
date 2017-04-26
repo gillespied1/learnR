@@ -6,5 +6,5 @@ Tutors:
 * Dr Lillian Pazvakawambwa (UNAM)
 * Dr Nelago Indongo (UNAM)
 * Dr David Gillespie (CU)
-* Dr Paul Brennan (CU)
+* Dr Paul Brennan (CU) [http://rforbiochemists.blogspot.co.uk/]
 * Dr Mark Kelson (CU)
