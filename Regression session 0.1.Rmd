@@ -1,0 +1,120 @@
+---
+output: pdf_document
+---
+
+<!--![](S://PCAPH//PCAPH//Individuals Folders//Mark #Kelly//Teaching//R//learnR//Handbook//learnR.png) -->
+
+![](//Users//Mark//Dropbox//R//learnR//Handbook//learnR.png) 
+
+### Welcome to regression
+
+Linear regression is a workhorse of applied statistics and is a very flexible approach that can be used in a wide variety of applications.
+
+This is taken from here http://www.artifex.org/~meiercl/R_statistics_guide.pdf
+
+##Correlation and simple linear regression
+Correlation quantifies how well two variables X and Y covary together. Correlation only makes sense when both X and Y are variables that you measure. If you control X and are measuring Y, then use linear regression. Correlation does not discriminate between X and Y, and linear regression does – only use regression if you can clearly define which variable is X (i.e. is independent) and which is Y (dependent).
+In addition to importing data from .csv files, it is possible to create vectors of data for use with R. To demonstrate how to carry out a Pearson’s correlation analysis and a linear regression, first make vectors of elevation, precipitation, temperature, and soil pH data:
+
+```{r eval=T}
+#Input of elevation data in meters
+m <- c(1500,2020,2720,3400)
+#Input of precip data (mm) at each elevation
+ppt <- c(938.3,797.6,593.2,475.6)
+#Input of mean temperature data (degrees celsius) at each elevation
+temp <- c(17.9,14.9,10.8,7.1)
+#Input of soil C:N ratio at each elevation
+cn <- c(21.04,21.56,19.33,19.27)
+#Input of O-horizon soil pH at each elevation
+pH <- c(4.25,4.1,4.2,4.12)
+```
+
+#Calculation of Pearson’s correlation coefficients for selected pairs of variables
+For the “cor” function, Pearson’s correlation coefficient is the default method. It is possible to add a method ="spearman" or "kendall" argument if these coefficients are desired.
+
+```{r eval= T}
+cor(m,ppt)
+cor(m,temp)
+cor(temp,ppt)
+cor(m,cn)
+cor(m,pH)
+cor(temp,pH)
+```
+
+#Plot all combinations of variables to examine the shapes of the relationships
+First we can make a dataframe from our previously input vectors
+```{r eval =T}
+abiotic <- data.frame(elevation.m= m, precip.mm=ppt,temp.C = temp, cn = cn, pH= pH)
+#Plot all possible combinations of these variables with blue symbols
+plot(abiotic, col= "blue")
+```
+
+#Using linear regression to calculate a line of best fit between two variables.
+In order to be theoretically valid, assume that there is a “dependent/indepent” type of relationship between soil pH and temperature, with temperature as the independent variable.
+```{r eval=T}
+m1 <- lm(pH~temp.C, data= abiotic)
+summary(m1)
+```
+Note that the R-squared value calculated by the linear regression procedure gives the same “r” – by taking the square root – as does the Pearson’s correlation analysis.
+
+##Checking the homogeneity of variance assumption
+Plotting residuals vs. fitted values is a good way to check whether the variance in the data are constant. The vertical scatter surrounding a horizontal line running through y=0 should be random:
+We will use the mtcars dataset
+
+```{r eval=F}
+mtcar
+```
+Let's explore whether a cars weight (mtcars$wt) is associated with it's miles per gallon (mtcars$mpg)
+```{r eval=T}
+model1 <- lm(mpg~wt,data=mtcars)
+summary(model1)
+```
+Let's explore the model fit
+```{r eval=T}
+plot(fitted(model1),resid(model1))
+abline(h=0)
+```
+The last two commands above will return a plot of the residual values vs. the fitted values for the model, with a horizontal line through y=0.
+We can also plot the absolute value of the residuals vs. the fitted values in order to increase the resolution of one's ability to detect whether there's a trend that would suggest non-constant variance. This is done with the following commands
+```{r eval=T}
+plot(fitted(model1),abs(resid(model1)))
+```
+A quick way to check non-constant variance quantitatively is this simple regression
+```{r eval =T}
+summary(lm(abs(resid(model1))~ fitted(model1)))
+```
+For a categorical variable, like mtcars$am (automatic or manual), we can graphically check how the levels are behaving (i.e. – is there any difference among the levels in terms of variance) like this:
+```{r eval=T}
+plot(resid(model1)~fitted(model1),pch=unclass(mtcars$am))
+```
+The argument “pch” specifies how the “plot characters” should be drawn. 
+Need to look for non-constant variance across all groups, and whether there's any ordering among groups.
+
+It is also possible to use Levene's test to assess the homogeneity of variance assumption. Levene's test is quite insensitive to non-normality. Also, because most parametric statistical tests are relatively insensitive to non-constant variance, there is no need to take action unless Levene’s Test is significant at the 1% level (Faraway 2004).
+```{r eval =T}
+library(car)
+levene.test(mtcars$mpg,mtcars$am)
+```
+Checking the Normality assumption (residuals should be normally distributed for linear models). Note: Only long-tailed distributions cause large inaccuracies for linear models. It is possible to transform log-normal distributions, but mild non-normality can be safely ignored. 
+Make a quantile-quantile (Q-Q) plot that compares the model’s residuals to “ideal” normal observations:
+```{r eval=T}
+qqnorm(resid(model1),ylab="Residuals")
+qqline(resid(model1))
+```
+
+The latter command puts a straight line onto the graph that joins the 1st and 3rd quartiles (and is therefore not influenced by outliers).
+To graphically display how the residuals are distributed, one can plot the density distribution of the residuals:
+```{r eval= T}
+plot(density(resid(model1)))
+rug(resid(model1))
+```
+The “rug” command puts the individual points as a stripchart beneath the density plot.
+
+Checking for outliers and points with undue leverage in a linear model
+Use of leverage plot:
+```{r eval=T}
+gi <- influence(model1)
+qqnorm(gi$coef[,2])
+```
+
+This produces a leverage plot for the 2nd term in the model, since inclusion of the intercept makes weight variable the 2nd term in the model.
