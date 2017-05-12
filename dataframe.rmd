@@ -1,0 +1,235 @@
+---
+title: "Storing and using data in data.frame"
+author: "Dave Gillespie"
+date: "4 April 2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+*Tutorial ideas taken from [www.r-tutor.com/r-introduction/data-frame] and [https://www3.nd.edu/~steve/Rcourse/Lecture2v1.pdf]*
+
+
+Throughout this course, we will be using data.frame to form a structure around our data. A data frame is a list of vectors of the same length. Data frames may contain both numeric and categorical data. Matrices and other data frames can be combined with other data frames, making them a useful tool for manipulating data within R.
+
+#Creating a data frame
+
+
+To create a data frame from scratch, we write:
+
+
+```{r data.frame from scratch}
+dfexample<-data.frame(gender = c("M","M","F","M","F","F","F","M","M","M"), 
+                      ht = c(172,186.5,165,180,162.5,179,171,188,175,190), 
+                      wt = c(91,99,74,80,75,73,87,90,78,73))
+```
+
+
+Try writing this yourself and then writing the *dfexample*. This should give you the following:
+
+
+```{r data frame example}
+dfexample
+```
+
+
+Note the use of quotation marks to specify categorical variables and how numeric variables are stored using the maximum decimal places specified (i.e. even if *all* entries within a column do not have decimal places specified).
+
+#Adding new variables
+
+
+Adding a new variable is simple. Imagine we also had the age of these individuals. To add these we write:
+
+
+```{r data frame example 1}
+dfexample1<-data.frame(dfexample, age = c(25,18,37,23,27,32,30,32,29,19))
+```
+
+
+which gives us
+
+
+```{r view data frame example 1}
+dfexample1
+```
+
+
+Note that this vector must be the same length as the other columns in the existing data frame.
+
+#Browsing, describing, and summarising your data frame
+
+
+##Browsing your data frame
+
+We have already covered the syntax for viewing the data frame in its entirety. However, in most circumstances this might not be useful. For example, in cases with large data frames containing too many rows or columns to view on one screen. To *preview* a data frame, write the following:
+
+
+```{r preview data frame}
+head(dfexample1)
+```
+
+
+This provides the first few rows of the data frame. You can also specify the exact number of rows to display. For example, if you want to view the first three rows, write the following:
+
+
+```{r preview first three rows of data frame}
+head(dfexample1, n=3)
+```
+
+
+It may also be desirable to browse a particular columns of data. Imagine we wish to look at the "gender" column in our data frame in isolation. This is done by writing the following:
+
+```{r column slice data frame}
+dfexample1[1]
+```
+
+
+or writing the specific name of the column with quotation marks:
+
+
+```{r column slice data frame1}
+dfexample1["gender"]
+```
+
+
+Columns can also be displayed side-by-side (even if not side-by-side within the whole data frame). We can view the columns containing "gender" and "age" variables, side-by-side, by writing the following:
+
+
+```{r column slice data frame2}
+dfexample1[c("gender", "age")]
+```
+
+
+Similarly, we can browse particular rows. In our dataframe, if we want to view row 3 in isoltation we would write:
+
+
+```{r row slice data frame}
+dfexample1[3,]
+```
+
+
+We can view multiple rows (that are not above or below eachother in the original data frame) by writing the following:
+
+
+```{r row slice data frame1}
+dfexample1[c(3, 10),]
+```
+
+
+These column and row *slices* can also be combined. For example, say we want to view the "gender" and "age" variables for cases 3 and 10, we would write:
+
+
+```{r column and row slice data frame}
+dfexample1[c(3,10),c("gender","age")]
+```
+
+
+##Describing your data frame
+
+
+You can also describe your data frame using the *str* and *names* commands. Try writing the following:
+
+```{r describe data frame 1}
+str(dfexample1)
+```
+
+
+and 
+
+
+```{r describe data frame 2}
+names(dfexample1)
+```
+
+
+To check the number of rows and columns in your data frame, you can use to *nrow* and *ncol* commands:
+
+
+```{r number of rows in data frame}
+nrow(dfexample1)
+```
+
+
+```{r number of columns in data frame}
+ncol(dfexample1)
+```
+
+
+This might be particularly useful when faced with large data frames and needing the check the number of cases and variables.
+
+
+##Summarising your data frame
+
+
+Another useful function is *summary*, which gives basic summary statistics of each variable in your data frame, tailoring the summary statisics presented depending on the type of variable.
+
+
+```{r summarise data frame}
+summary(dfexample1)
+```
+
+
+Other summary statistics commands will be covered later on in the course, but this command is always a useful starting point as it gives you a simple check that the variables are stored in the correct way, there are no spurious categories in your categorical variables, and there are no obvious erroneous outliers in your numeric data.
+
+
+#Importing data from another statistics package
+
+
+Moving on from a simple example to something more closely representing data you might encounter in your day-to-day role, lets import a dataset from SPSS into R, storing it as a data frame. Using the same syntax structure used in the *importing data* session, write:
+
+```{r install foreign library, echo = FALSE}
+library(foreign)
+```
+
+
+```{r read in SPSS example, warning = FALSE}
+spssexample<-read.spss(file=
+                         "C:\\Users\\gille\\Documents\\PhD stuff\\Simulated data for CH4 030616.sav"
+                       , to.data.frame=T, use.value.labels=T)
+```
+
+
+Note the use of double backslashes when specifying the directory in which your dataset is stored (rather than the single forward slashes we tend to see on web links).
+
+
+First, lets get a basic description of the structure of our new data frame.
+
+```{r structure of spss data frame}
+str(spssexample)
+```
+
+
+Note there are 100 observations and 11 variables. Given this, how might we want to do the following:
+
+
+1. View our data *(note that 100 observations may be too cumbersome to view on one screen)*
+2. Inspect the variables VAR1 and DIFF_V1V2 side-by-side for cases 1 to 5
+3. Produce basic summary statistics for the variables in your data frame
+
+
+*Specimen answers*
+
+1. View our data *(note that 100 observations may be too cumbersome to view on one screen)*
+
+```{r specimen answer 1}
+head(spssexample)
+```
+
+
+2. Inspect the variables VAR1 and DIFF_V1V2 side-by-side for cases 1 to 5
+
+
+```{r specimen example 2}
+spssexample[c(1,2,3,4,5),c("VAR1","DIFF_V1V2")]
+```
+
+
+3. Produce basic summary statistics for the variables in your data frame
+
+
+```{r specimen example 3}
+summary(spssexample)
+```
+
