@@ -1,0 +1,166 @@
+---
+title: "Presenting Statistics for Publication"
+author: "Dr. David Gillespie"
+date: "14^th^ June 2017"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Outline
+
+- Background
+- Two key guiding principles
+- Expansion and examples
+- Discussion and questions
+- Summary
+
+<div class="blue2">
+**N.B.** I am a medical statistician by background, but concerns are likely to be apparent in other fields and principles should also hold true...
+</div>
+
+
+## Background
+
+Dozens of articles published demonstrating statistical errors:
+
+- Application
+- Analysis
+- Interpretation
+- Reporting
+  
+**Why might this be a problem?**
+
+- Decision making (and consequences of)?
+- Reproducibility?
+- Discredited professionals (or *profession*)?
+
+##Source material|(For reference)
+
+Lang T, Altman D. **Basic statistical reporting for articles published in clinical medical journals: the SAMPL guidelines.** In: Smart P, Maisonneuve H, Polderman A (eds). *Science Editors' Handbook*, European Association of Science Editors, 2013.
+
+<p align="center">
+![](C:\Users\gille\Downloads\SAMPL guidelines.png)
+</p>
+
+
+##Guiding principles 
+
+1. Sufficiently detailed statistical methods: <div class="blue2"> *"Describe statistical methods with enough detail to enable a knowledgeable reader, with access to the original data, to verify the reported results"* </div>
+
+2. Sufficiently detailed results: <div class="blue2"> *"Provide enough detail that the results can be incorporated into other analyses"* </div>
+
+##Reporting statistical methods
+
+- Describe target sample size and underlying assumptions
+<div class="blue2">*Related to pre-specification (see next slide...)*</div>
+
+- Describe *purpose* of each piece of analysis
+<div class="blue2">*Hypothesis driven? Hypothesis generating?*</div>
+
+
+- Describe variables used
+<div class="blue2">*How were they measured? Any derivation required?*</div>
+
+
+- Describe methods used to analyse data
+<div class="blue2">*Clustering, missing data, outliers, transformations, etc.*</div>
+
+
+- Describe software used to analyse data
+<div class="blue2">*When using R, also state the package/s used!*</div>
+
+
+## Pre-specification is important for transparency
+
+- Protocol with description of aims, objectives, and planned analyses in place **prior to starting any analysis**
+<div class="blue2">*Publish this in a journal or on a website*</div>
+
+- Descriptions of any deviations from any pre-specified plans
+<div class="blue2">*Including date and reason for deviation*</div>
+
+<p align="center">
+![](C:\Users\gille\Downloads\Fishing.jpg)
+
+##Reporting statistical results
+
+##An over-reliance on *P* values...
+
+- A function of sample size
+- Often reported in isolation (i.e. without context)
+- Do not convey effect size
+- Too much focus on reporting *statistically significant* findings based on an arbitrary threshold (e.g. 5% or *P* < 0.05)
+
+<p align="center">
+![](C:\Users\gille\Downloads\Significant-others.jpg)
+</p>
+
+##Some suggested improvements
+
+- State sample size (and reflect against original target)
+- Report effect sizes (absolute and relative?)
+- Convey uncertainty (e.g. confidence intervals, data visualisation)
+- Interpret in terms of *meaningful differences* (e.g. clinical importance)
+
+**If reporting *P* values:**
+
+- State hypothesis/es of interest
+- Report calculated *P* value rather than threshold (i.e. *P* = 0.032 rather than *P* < 0.05)
+
+##Some examples of poor practice
+
+##Reporting guidelines in the medical research field
+
+<p align="center">
+![](C:\Users\gille\Downloads\equator_logo.PNG)
+
+- Enhancing the QUAlity and Transparency Of health Research
+<div class="blue2">*www.equator-network.org*</div>
+
+- Guidelines for various study designs, topics, and clinical areas
+
+- Catchy acronyms!
+<div class="blue2">*e.g. The Strengthening the Reporting of Observational Studies in Epidemiology (STROBE) Statement: guidelines for reporting observational studies*</div>
+
+##Group discussion
+
+<p align="center">
+**Consider statistical methods and results as reported throughout publications in your own field...**
+</p>
+
+1. What are the positive aspects of reporting in your field?
+2. How could reporting be improved?
+
+##Summary
+
+##Any questions?
+
+***Acknowledgement:*** with special thanks to Thomas Lang and Douglas Altman
+
+Lang T, Altman D. **Basic statistical reporting for articles published in clinical medical journals: the SAMPL guidelines.** In: Smart P, Maisonneuve H, Polderman A (eds). *Science Editors' Handbook*, European Association of Science Editors, 2013.
+
+---------------------------------------------------------------------------------------------------------------------
+**Dr. David Gillespie (Ph.D)**
+
+Research Fellow in Statistics, Centre for Trials Research, Cardiff University
+
+***E-mail:*** GillespieD1@Cardiff.ac.uk
+
+***Twitter:*** @DaveGUK87
+---------------------------------------------------------------------------------------------------------------------
+
+## Slide with R Output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
+
