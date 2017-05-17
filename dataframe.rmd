@@ -185,11 +185,11 @@ library(foreign)
 
 
 ```{r read in SPSS example, warning = FALSE}
-spssexample<-read.spss(file=
-                         "C:\\Users\\gille\\Documents\\PhD stuff\\Simulated data for CH4 030616.sav"
-                       , to.data.frame=T, use.value.labels=T)
+link <- "https://raw.githubusercontent.com/gillespied1/learnR/master/Simulated%20data%20for%20CH4%20030616.sav"
+download.file(url=link, destfile="file.sav", mode="wb")
+spssexample<-read.spss(file="file.sav", 
+                       to.data.frame=T, use.value.labels=T)
 ```
-
 
 Note the use of double backslashes when specifying the directory in which your dataset is stored (rather than the single forward slashes we tend to see on web links).
 
