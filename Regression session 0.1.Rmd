@@ -14,6 +14,9 @@ This is taken from here http://www.artifex.org/~meiercl/R_statistics_guide.pdf
 
 ##Correlation and simple linear regression
 Correlation quantifies how well two variables X and Y covary together. Correlation only makes sense when both X and Y are variables that you measure. If you control X and are measuring Y, then use linear regression. Correlation does not discriminate between X and Y, and linear regression does – only use regression if you can clearly define which variable is X (i.e. is independent) and which is Y (dependent).
+
+*Add some concrete example of what you mean here (to put this into context)
+
 In addition to importing data from .csv files, it is possible to create vectors of data for use with R. To demonstrate how to carry out a Pearson’s correlation analysis and a linear regression, first make vectors of elevation, precipitation, temperature, and soil pH data:
 
 ```{r eval=T}
@@ -56,6 +59,8 @@ m1 <- lm(pH~temp.C, data= abiotic)
 summary(m1)
 ```
 Note that the R-squared value calculated by the linear regression procedure gives the same “r” – by taking the square root – as does the Pearson’s correlation analysis.
+
+*This is introduced without any indication of the assumptions underlying a linear regression. While I know we're not teaching statistics, it might be worth briefly covering the core assumptions...
 
 ##Checking the homogeneity of variance assumption
 Plotting residuals vs. fitted values is a good way to check whether the variance in the data are constant. The vertical scatter surrounding a horizontal line running through y=0 should be random:
